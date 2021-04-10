@@ -188,15 +188,23 @@ int insertNode(headNode* h, int key) {
 	{
 		previous = h->first; //previous는 리스트의 첫 번째 값을 가리게한다
 		p = h->first->link; //p는 리스트의 두 번째 값을 가리키게 한다
-		while (p->key <= node->key) //p의 key 값이 node의 key 값보다 작거나 같은 동안 반복한다. 
+		while (p->key <= node->key && p->link != NULL) //p의 key 값이 node의 key 값보다 작거나 같은 동안 반복한다. 
 		{
 			previous = p; //previous는 p를 가리키고
 			p = p->link; //p는 다음 값을 가리킨다
 		}
-		//반복문을 나왔다는 것은 previous와 p의 사이에 node를 삽입하면 된다는 것을 뜻한다
-		previous->link = node; //previous가 가리키는 값을 node로 하고
-		node->link = p; //node는 p를 가리키게 하고 종료한다
-		return 0;
+		//반복문을 나왔다는 것은 previous와 p의 사이에 node를 삽입하면 된다는 것을 뜻한다 혹은 리스트의 가장 마지막에 도달했다
+		if (p->link == NULL)//리스트의 가장 마지막에 도달했다면
+		{
+			p->link = node; //리스트의 마지막 원소가 node를 가리키게 하고
+			node->link = NULL; //node가 NULL을 가리키게 한다
+		}
+		else 
+		{
+			previous->link = node; //previous가 가리키는 값을 node로 하고
+			node->link = p; //node는 p를 가리키게 하고 종료한다
+			return 0;
+		}
 	}
 }
 
@@ -217,7 +225,7 @@ int insertLast(headNode* h, int key) {
 	}
 	else //그렇지 않으면 아래를 실행한다
 	{
-		for (i = 0, p = h->first; p->link != NULL; p = p->link)  //p가 리스트의 첫 번째 값을 가리키게 하고 p가 리스트의 마지막을 가리키게한다 
+		for (i = 0, p = h->first; p->link != NULL; p = p->link)  //p가 리스트의 첫 번째 값을 가리키게 하고 p가 리스트의 마지막을 가리키게 하는 for문을 돌린다
 			i++; // 아무 의미 없는 식이다
 		node->link = NULL; //node가 가리키는 값에는 NULL을 넣는다
 		p->link = node; //p가 가리키는 곳에 node 주소를 넣음으로써 list의 가장 끝에 node를 넣고 종료한다
@@ -251,7 +259,20 @@ int deleteFirst(headNode* h) {
  * list에서 key에 대한 노드 삭제
  */
 int deleteNode(headNode* h, int key) {
+	listNode* p;
+	listNode* pre; //pre는 p의 하나 전을 가리킨다
+	if (h->first == NULL) //리스트가 이미 비어있다면 -1을 리턴한다
+	{
+		printf("list is already empty !!\n");
+		return -1;
+	}
+	else if (h->first->link == NULL) //리스트의 값이 하나라면
+	{
+	}
+	else //리스트에 값이 두 개 이상이라면
+	{
 
+	}
 	return 0;
 
 }
@@ -260,6 +281,33 @@ int deleteNode(headNode* h, int key) {
  * list의 마지막 노드 삭제
  */
 int deleteLast(headNode* h) {
+	listNode* p;
+	listNode* pre; //pre는 p의 하나 전을 가리킨다
+	if (h->first == NULL) //리스트가 이미 비어있다면 -1을 리턴한다
+	{
+		printf("list is already empty !!\n");
+		return -1;
+	}
+	else if(h->first->link == NULL) //리스트의 값이 하나라면
+	{
+		p = h->first->link; //p가 그 한 값을 가리키게 한다.
+		h->first = NULL; //리스트를 비우고
+		free(p); //원래 있던 한 값을 메모리 해제 한다
+	}
+	else //리스트의 값이 두개 이상이라면
+	{
+		pre = h->first; //pre는 리스트의 첫 번째 값을 가리게한다
+		p = h->first->link; //p는 리스트의 두 번째 값을 가리키게 한다
+		while (p->link != NULL) // p가 가리키는 값이 없을 때 까지
+		{
+			pre = p; //pre는 p를 가리키고
+			p = p->link; //p는 다음 단계를 가리킨다
+		}
+		//반복문을 나왔으므로 p는 가장 마지막 원소를 가리키고 있다
+		pre->link = NULL; //pre가 NULL을 가리키게 함으로써 마지막 원소를 삭제하고ㅓ
+		free(p); //원래 마지막이었던 메모리를 해제한다
+
+	}
 
 	return 0;
 }
