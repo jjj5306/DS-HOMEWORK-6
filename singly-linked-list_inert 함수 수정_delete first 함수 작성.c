@@ -164,7 +164,27 @@ int insertNode(headNode* h, int key) {
 		h->first = node; //첫 번째 값에 node를 넣고 종료한다
 		return 0;
 	}
-	else  //그렇지 않으면 아래를 실행한다
+	else if(h->first->link == NULL) //리스트의 값이 하나라면
+	{
+		if (h->first->key > node->key)//그 하나의 값이 node 값보다 크다면 
+		{
+			node->link = h->first->link;
+			h->first = node; //그 한 값의 앞에 node 삽입
+		}
+		else // 그 하나의 값이 node 값보다 작거나 같다면
+		{
+			h->first->link = node;
+			node->link = NULL; //그 한 값의 뒤에 node 삽입
+		}
+		return 0;
+	}
+	else if(h->first->key > node->key) // 리스트의 첫 번째 값에 node를 삽입해야 한다면
+	{
+		node->link = h->first;
+		h->first = node;
+		return 0;
+	}
+	else //리스트의 두 번째 이상의 값에 node를 삽입해야 한다면
 	{
 		previous = h->first; //previous는 리스트의 첫 번째 값을 가리게한다
 		p = h->first->link; //p는 리스트의 두 번째 값을 가리키게 한다
@@ -210,7 +230,18 @@ int insertLast(headNode* h, int key) {
  * list의 첫번째 노드 삭제
  */
 int deleteFirst(headNode* h) {
-
+	listNode* p;
+	if (h->first == NULL) //리스트가 이미 비어있다면 -1을 리턴한다
+	{
+		printf("list is already empty !!\n");
+		return -1;
+	}
+	else //리스트가 비어있지 않다면
+	{
+		p = h->first; //p에 리스트의 첫 번째 주소 저장
+		h->first = p->link; //리스트의 첫 번째 값을 리스트의 두 번째 값으로 변경
+		free(p); //p의 메모리를 free함으로써 원래 리스트의 첫 번째 값의 메모리 해제
+	}
 
 	return 0;
 }
