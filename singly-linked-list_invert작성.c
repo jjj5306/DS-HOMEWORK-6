@@ -355,8 +355,40 @@ int deleteLast(headNode* h) {
  * 리스트의 링크를 역순으로 재 배치
  */
 int invertList(headNode* h) {
-
-	return 0;
+	listNode* pre; //p 이전을 가리킴
+	listNode* p;
+	listNode* next; //p 다음을 가리킴
+	if (h->first == NULL || h->first->link == NULL ) // 리스트가 비어있거나 리스트의 원소가 하나라면 그냥 종료
+		return 0;
+	else if (h->first->link->link == NULL) // 리스트의 원소가 두 개라면 그 둘을 바꿈
+	{
+		p = h->first->link; //p는 리스트의 두 번째 원소
+		pre = h->first; //pre는 리스트의 첫 번째 원소
+		h->first = p; //첫 번째 원소를 p로 바꾸고
+		p->link = pre; //p다음 원소는 pre로 한다
+		pre->link = NULL; //pre 다음은 NULL이다
+		return 0;
+	}
+	else //리스트의 원소가 세 개 이상이라면
+	{
+		pre = h->first; //pre는 첫 번째 원소를 가리키고
+		p = pre->link; //p는 pre 다음 원소를
+		next = p->link; //next는 p 다음 원소를 가리킨다
+		pre->link = NULL; //리스트의 첫 번째 원소가 NULL을 가리키게 하고
+		while (next->link != NULL) //next가 리스트의 마지막이면 반복문을 종료한다
+		{
+			p->link = pre;
+			pre = p; //pre는 다음을 가리키고
+			p = next; //p 도 다음을 가리킨다
+			next = next->link; //next도 다음을 가리킨다
+		}
+		//반복문을 나왔다는 것은 첫 번째 원소부터 pre가 가리키는 곳 까지는 invert가 완료 된것이다 
+		//리스트의 첫 번째 원소가 next임을 알려주기 위해 h.first에 next를 넣고 next가 가리키는 곳을 변경 하면 된다
+		p->link = pre;
+		h->first = next;
+		next->link = p;
+		return 0;
+	}
 }
 
 
