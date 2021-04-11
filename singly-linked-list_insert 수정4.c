@@ -188,23 +188,32 @@ int insertNode(headNode* h, int key) {
 	{
 		previous = h->first; //previous는 리스트의 첫 번째 값을 가리게한다
 		p = h->first->link; //p는 리스트의 두 번째 값을 가리키게 한다
-		while (p->key <= node->key && p->link != NULL) //p의 key 값이 node의 key 값보다 크거나 p가 리스트의 마지막에 도달 할 때 까지 반복한다
+		if(previous->key < key && p->key > key) //리스트에 값이 두 개 있고 그 사이에 삽입해야 한다면
 		{
-			previous = p; //previous는 p를 가리키고
-			p = p->link; //p는 다음 값을 가리킨다
+			previous->link = node;
+			node->link = p;
+			return 0;
 		}
-		//반복문을 나왔다는 것은 previous와 p의 사이에 node를 삽입하면 된다는 것을 뜻한다 혹은 리스트의 가장 마지막에 도달했다는 것을 의미한다
-		if (p->link == NULL)//리스트의 가장 마지막에 도달했다면
+		else
 		{
-			p->link = node; //리스트의 마지막 원소가 node를 가리키게 하고
-			node->link = NULL; //node가 NULL을 가리키게 한다
+			while (p->key <= node->key && p->link != NULL) //p의 key 값이 node의 key 값보다 크거나 p가 리스트의 마지막에 도달 할 때 까지 반복한다
+			{
+				previous = p; //previous는 p를 가리키고
+				p = p->link; //p는 다음 값을 가리킨다
+			}
+			//반복문을 나왔다는 것은 previous와 p의 사이에 node를 삽입하면 된다는 것을 뜻한다 혹은 리스트의 가장 마지막에 도달했다는 것을 의미한다
+			if (p->link == NULL)//리스트의 가장 마지막에 도달했다면
+			{
+				p->link = node; //리스트의 마지막 원소가 node를 가리키게 하고
+				node->link = NULL; //node가 NULL을 가리키게 한다
+			}
+			else 
+			{
+				previous->link = node; //previous가 가리키는 값을 node로 하고
+				node->link = p; //node는 p를 가리키게 하고 종료한다
+			}
+			return 0;
 		}
-		else 
-		{
-			previous->link = node; //previous가 가리키는 값을 node로 하고
-			node->link = p; //node는 p를 가리키게 하고 종료한다
-		}
-		return 0;
 	}
 }
 
