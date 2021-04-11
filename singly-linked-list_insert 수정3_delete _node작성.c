@@ -106,6 +106,7 @@ int main()
 	return 1;
 }
 
+
 headNode* initialize(headNode* h) {
 
 	/* headNode가 NULL이 아니면, freeNode를 호출하여 할당된 메모리 모두 해제 */
@@ -133,7 +134,6 @@ int freeList(headNode* h) {
 	free(h);
 	return 0;
 }
-
 
 
 /**
@@ -168,7 +168,7 @@ int insertNode(headNode* h, int key) {
 	{
 		if (h->first->key > node->key)//그 하나의 값이 node 값보다 크다면 
 		{
-			node->link = h->first->link;
+			node->link = h->first;
 			h->first = node; //그 한 값의 앞에 node 삽입
 		}
 		else // 그 하나의 값이 node 값보다 작거나 같다면
@@ -188,12 +188,12 @@ int insertNode(headNode* h, int key) {
 	{
 		previous = h->first; //previous는 리스트의 첫 번째 값을 가리게한다
 		p = h->first->link; //p는 리스트의 두 번째 값을 가리키게 한다
-		while (p->key <= node->key && p->link != NULL) //p의 key 값이 node의 key 값보다 작거나 같은 동안 반복한다. 
+		while (p->key <= node->key && p->link != NULL) //p의 key 값이 node의 key 값보다 크거나 p가 리스트의 마지막에 도달 할 때 까지 반복한다
 		{
 			previous = p; //previous는 p를 가리키고
 			p = p->link; //p는 다음 값을 가리킨다
 		}
-		//반복문을 나왔다는 것은 previous와 p의 사이에 node를 삽입하면 된다는 것을 뜻한다 혹은 리스트의 가장 마지막에 도달했다
+		//반복문을 나왔다는 것은 previous와 p의 사이에 node를 삽입하면 된다는 것을 뜻한다 혹은 리스트의 가장 마지막에 도달했다는 것을 의미한다
 		if (p->link == NULL)//리스트의 가장 마지막에 도달했다면
 		{
 			p->link = node; //리스트의 마지막 원소가 node를 가리키게 하고
@@ -203,10 +203,11 @@ int insertNode(headNode* h, int key) {
 		{
 			previous->link = node; //previous가 가리키는 값을 node로 하고
 			node->link = p; //node는 p를 가리키게 하고 종료한다
-			return 0;
 		}
+		return 0;
 	}
 }
+
 
 /**
  * list에 key에 대한 노드하나를 추가
@@ -266,16 +267,53 @@ int deleteNode(headNode* h, int key) {
 		printf("list is already empty !!\n");
 		return -1;
 	}
-	else if (h->first->link == NULL) //리스트의 값이 하나라면
+	else if (h->first->link == NULL) //리스트의 값이 하나이고
 	{
+		if (h->first->key == key) //그 값이 key와 같다면
+		{
+			p = h->first;
+			h->first = NULL; //그 값을 삭제하고
+			free(p); //원래 있던 값을 메모리 해제한다 
+		}
+		else //리스트에 그 값이 없다면 -1을 리턴한다
+		{
+			printf("not in list !!\n");
+			return -1;
+		}
 	}
 	else //리스트에 값이 두 개 이상이라면
 	{
-
+		p = h->first->link; //p는 리스트의 두 번째 값을 저장하고
+		pre = h->first; //pre는 리스트의 첫 번째 값을 저장한다
+		if (pre->key == key) //리스트의 첫 번째 값이 key와 같다면
+		{
+			h->first = p; //리스트의 첫 번째 값을 p로 바꾸고
+			pre->link = NULL; //pre는 NULL을 가리키게 한 뒤
+			free(pre); //pre를 메모리 해제하고
+			return 0; //종료한다
+		}
+		while (p->key != key && p->link != NULL) //p의 key 값이 key와 같거나 p가 가장 마지막을 가리킬 때 까지 반복한다 
+		{
+			pre = p; //pre는 p를 가리키고
+			p = p->link; //p는 다음 값을 가리킨다
+		}
+		//반복문을 나왔다는 것은 p가 key와 같은 값을 가진 리스트를 가리키고 있거나 혹은 리스트의 가장 마지막에 도달했다는 것을 의미한다
+		if (p->link == NULL)//리스트의 가장 마지막에 도달했다면 리스트에 값이 없는 것이다
+		{
+			printf("not in list !!\n");
+			return -1;
+		}
+		else //p는 key와 같은 값을 가진 리스트를 가리키고 있다
+		{
+			pre->link = p->link; //pre 다음이 p 다음을 가리키게 하고
+			p->link = NULL; //p는 NULL을 가리키게 한 뒤
+			free(p); //p를 메모리 해제한다
+		}
 	}
 	return 0;
 
 }
+
 
 /**
  * list의 마지막 노드 삭제
